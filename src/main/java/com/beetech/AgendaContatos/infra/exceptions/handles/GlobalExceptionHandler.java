@@ -1,6 +1,6 @@
-package com.beetech.AgendaContatos.exceptions.handles;
+package com.beetech.AgendaContatos.infra.exceptions.handles;
 
-import com.beetech.AgendaContatos.exceptions.usuarioExceptions.UsuarioJaExisteException;
+import com.beetech.AgendaContatos.infra.exceptions.usuarioExceptions.UsuarioJaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
