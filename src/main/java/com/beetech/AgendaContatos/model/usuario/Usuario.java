@@ -2,10 +2,16 @@ package com.beetech.AgendaContatos.model.usuario;
 
 import com.beetech.AgendaContatos.model.pessoa.Pessoa;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "Usuario" )
 @Table(name="usuarios")
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +27,10 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(DadosCadastroUsuario dados, Pessoa pessoa) {
+    public Usuario(String login, String senha, Pessoa pessoa) {
         this.ativo = true;
-        this.login = dados.login();
-        this.senha = dados.senha();
+        this.login = login;
+        this.senha = senha;
         this.pessoa = pessoa;
     }
 
@@ -63,5 +69,40 @@ public class Usuario {
 
     public void excluir() {
         this.ativo = false;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 }

@@ -1,6 +1,7 @@
 package com.beetech.AgendaContatos.controller;
 
 
+import com.beetech.AgendaContatos.infra.security.DadosTokenJWT;
 import com.beetech.AgendaContatos.model.usuario.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/users")
 public class UsuarioController {
 
     @Autowired
@@ -25,15 +26,15 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DetalhamentoUsuario> buscarUsuario(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.buscarUsuario(id));
+        return ResponseEntity.ok(userService.buscarUsuarioPorId(id));
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/register")
     public ResponseEntity cadastrarUsuario(@RequestBody @Valid DadosCadastroUsuario dados,
                                            UriComponentsBuilder uriBuilder) {
         Usuario usuario = userService.cadastrarUsuario(dados);
 
-        URI uri = uriBuilder.path("/usuario/{id}").buildAndExpand(usuario.getId()).toUri();
+        URI uri = uriBuilder.path("/users/{id}").buildAndExpand(usuario.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new DetalhamentoUsuario(usuario));
     }
@@ -53,7 +54,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Usuario> autenticarUsuario(@RequestBody @Valid DadosAutenticacaoUsuario dados) {
-        return ResponseEntity.ok(userService.autenticar(dados));
+    public ResponseEntity autenticarUsuario(@RequestBody @Valid DadosAutenticacaoUsuario dados) {
+        return ResponseEntity.ok(new DadosTokenJWT(userService.autenticar(dados)));
     }
 }
