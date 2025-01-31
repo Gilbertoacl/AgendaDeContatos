@@ -3,6 +3,7 @@ package com.beetech.AgendaContatos.controller;
 
 import com.beetech.AgendaContatos.infra.security.DadosTokenJWT;
 import com.beetech.AgendaContatos.model.usuario.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@SecurityRequirement(name = "bearer-key")
 public class UsuarioController {
 
     @Autowired
@@ -30,7 +32,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity cadastrarUsuario(@RequestBody @Valid DadosCadastroUsuario dados,
+    public ResponseEntity<DetalhamentoUsuario> cadastrarUsuario(@RequestBody @Valid DadosCadastroUsuario dados,
                                            UriComponentsBuilder uriBuilder) {
         Usuario usuario = userService.cadastrarUsuario(dados);
 
@@ -41,9 +43,8 @@ public class UsuarioController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<DetalhamentoUsuario> atualizarUsuario(@PathVariable Long id,
-                                                                @RequestBody @Valid DadosAtualizacaoUsuario dados) {
-        return ResponseEntity.ok(userService.atualizaUsuario(id, dados));
+    public ResponseEntity<DetalhamentoUsuario> atualizarUsuario(@RequestBody @Valid DadosAtualizacaoUsuario dados) {
+        return ResponseEntity.ok(userService.atualizaUsuario(dados));
     }
 
 
@@ -54,7 +55,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity autenticarUsuario(@RequestBody @Valid DadosAutenticacaoUsuario dados) {
+    public ResponseEntity<DadosTokenJWT> autenticarUsuario(@RequestBody @Valid DadosAutenticacaoUsuario dados) {
         return ResponseEntity.ok(new DadosTokenJWT(userService.autenticar(dados)));
     }
 }

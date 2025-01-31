@@ -65,8 +65,8 @@ public class UsuarioService {
     }
 
     @Transactional
-    public DetalhamentoUsuario atualizaUsuario(Long id, DadosAtualizacaoUsuario dados) {
-        Usuario user = usuarioRepository.findById(id)
+    public DetalhamentoUsuario atualizaUsuario(DadosAtualizacaoUsuario dados) {
+        Usuario user = usuarioRepository.findById(dados.id())
                 .orElseThrow(() -> new UsuarioNaoExistenteException("Usuário não encontrado"));
 
         user.atualizar(dados);
